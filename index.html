@@ -576,7 +576,7 @@
 
     if (bag.length === 0) refillBag();
     const idx = bag.pop();
-    return templates[idx](name, age, hobby);
+    return { idx, name, age, hobby, message: templates[idx](name, age, hobby) };
   }
 
   async function copyCardMessage(card, btn) {
@@ -601,6 +601,37 @@
     }, 1500);
   }
 
+  function buildShareUrl(card) {
+    const url = new URL(window.location.href);
+    url.search = '';
+    url.searchParams.set('name', card.dataset.name);
+    url.searchParams.set('age', card.dataset.age);
+    url.searchParams.set('hobby', card.dataset.hobby);
+    url.searchParams.set('msg', card.dataset.tplIdx);
+    return url.toString();
+  }
+
+  async function copyCardLink(card, btn) {
+    const url = buildShareUrl(card);
+    try {
+      await navigator.clipboard.writeText(url);
+    } catch (err) {
+      const temp = document.createElement('input');
+      temp.value = url;
+      document.body.appendChild(temp);
+      temp.select();
+      document.execCommand('copy');
+      document.body.removeChild(temp);
+    }
+    const original = btn.textContent;
+    btn.textContent = 'Link copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = original;
+      btn.classList.remove('copied');
+    }, 1500);
+  }
+
   function demoteTopCard() {
     const top = stackEl.firstElementChild;
     if (!top) return;
@@ -612,13 +643,17 @@
     if (tryBtn) tryBtn.remove();
   }
 
-  function addCard(message) {
+  function addCard(data) {
     demoteTopCard();
 
     const rotate = (Math.random() * 2.4 - 1.2).toFixed(2) + 'deg';
     const card = document.createElement('section');
     card.className = 'card-stage is-newest';
     card.style.setProperty('--rotate', rotate);
+    card.dataset.tplIdx = data.idx;
+    card.dataset.name = data.name;
+    card.dataset.age = data.age;
+    card.dataset.hobby = data.hobby;
     card.innerHTML = `
       <div class="candles" aria-hidden="true">
         <div class="candle"></div>
@@ -634,12 +669,15 @@
       <div class="card-actions">
         <button type="button" class="btn-ghost try-again-btn">Try another</button>
         <button type="button" class="btn-ghost copy-btn">Copy message</button>
+        <button type="button" class="btn-ghost link-btn">🔗 Copy link</button>
       </div>
     `;
-    card.querySelector('.message').textContent = message;
+    card.querySelector('.message').textContent = data.message;
     card.querySelector('.try-again-btn').addEventListener('click', () => addCard(pickMessage()));
     const copyBtn = card.querySelector('.copy-btn');
     copyBtn.addEventListener('click', () => copyCardMessage(card, copyBtn));
+    const linkBtn = card.querySelector('.link-btn');
+    linkBtn.addEventListener('click', () => copyCardLink(card, linkBtn));
 
     stackEl.prepend(card);
   }
@@ -677,8 +715,25 @@
     form.requestSubmit();
   });
 
-  refillBag();
-  addCard(pickMessage());
+  (function loadInitialCard() {
+    const params = new URLSearchParams(window.location.search);
+    const sharedIdx = parseInt(params.get('msg'), 10);
+
+    if (!Number.isNaN(sharedIdx) && templates[sharedIdx]) {
+      const name = params.get('name') || 'you';
+      const age = params.get('age') || '??';
+      const hobby = params.get('hobby') || 'whatever that thing is you do';
+      nameInput.value = name;
+      ageInput.value = age;
+      hobbyInput.value = hobby;
+      refillBag();
+      addCard({ idx: sharedIdx, name, age, hobby, message: templates[sharedIdx](name, age, hobby) });
+      return;
+    }
+
+    refillBag();
+    addCard(pickMessage());
+  })();
 
   // --- Birthday jam: a short original upbeat loop, synthesized live (no audio files, no copyright song) ---
   const NOTE_FREQ = {
