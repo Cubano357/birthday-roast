@@ -1,3 +1,4 @@
+<meta charset="UTF-8">
 <title>Birthday Roast</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -387,9 +388,15 @@
     border-color: var(--marigold);
   }
 
-  .btn-ghost.copied {
+  .btn-ghost.copied,
+  .btn-ghost.active {
     color: var(--coral-strong);
     border-color: var(--coral-strong);
+  }
+
+  .jam-btn {
+    align-self: flex-start;
+    margin-top: 2px;
   }
 
   footer {
@@ -480,6 +487,7 @@
     <span class="eyebrow">Handle with sarcasm</span>
     <h1><span class="word-birthday">Birthday</span> <span class="word-roast">Roast</span><span class="bang">!</span></h1>
     <p class="subtitle">Give us the who, the how-old, and the hobby. We'll write the line you read out loud at the table.</p>
+    <button type="button" id="jam-btn" class="btn-ghost jam-btn">🎵 Play a jam</button>
   </header>
 
   <div class="layout">
@@ -634,4 +642,110 @@
 
   refillBag();
   addCard(pickMessage());
+
+  // --- Birthday jam: a short original upbeat loop, synthesized live (no audio files, no copyright song) ---
+  const NOTE_FREQ = {
+    C3: 130.81, G3: 196.00,
+    C5: 523.25, D5: 587.33, E5: 659.25, F5: 698.46, G5: 783.99, A5: 880.00
+  };
+  const STEP_DUR = 0.19;
+  const BAR_DUR = STEP_DUR * 16;
+  const MELODY = ['E5', 'G5', 'E5', 'C5', 'D5', 'F5', 'D5', null, 'G5', 'E5', 'G5', 'A5', 'G5', 'E5', 'C5', null];
+  const BASS_STEPS = [0, 4, 8, 12];
+
+  const jamBtn = document.getElementById('jam-btn');
+  let audioCtx = null;
+  let noiseBuffer = null;
+  let jamTimer = null;
+  let jamPlaying = false;
+
+  function pluck(ctx, freq, time, duration, type, peak) {
+    const osc = ctx.createOscillator();
+    osc.type = type;
+    osc.frequency.value = freq;
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.0001, time);
+    gain.gain.exponentialRampToValueAtTime(peak, time + 0.015);
+    gain.gain.exponentialRampToValueAtTime(0.0001, time + duration);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start(time);
+    osc.stop(time + duration + 0.02);
+  }
+
+  function kick(ctx, time) {
+    const osc = ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(150, time);
+    osc.frequency.exponentialRampToValueAtTime(45, time + 0.12);
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.5, time);
+    gain.gain.exponentialRampToValueAtTime(0.001, time + 0.14);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start(time);
+    osc.stop(time + 0.16);
+  }
+
+  function hat(ctx, buffer, time) {
+    const src = ctx.createBufferSource();
+    src.buffer = buffer;
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'highpass';
+    filter.frequency.value = 6000;
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.12, time);
+    gain.gain.exponentialRampToValueAtTime(0.001, time + 0.05);
+    src.connect(filter).connect(gain).connect(ctx.destination);
+    src.start(time);
+    src.stop(time + 0.06);
+  }
+
+  function createNoiseBuffer(ctx) {
+    const size = ctx.sampleRate * 0.2;
+    const buffer = ctx.createBuffer(1, size, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < size; i++) data[i] = Math.random() * 2 - 1;
+    return buffer;
+  }
+
+  function scheduleBar(ctx, startTime) {
+    MELODY.forEach((note, i) => {
+      if (note) pluck(ctx, NOTE_FREQ[note], startTime + i * STEP_DUR, STEP_DUR * 0.9, 'triangle', 0.16);
+    });
+    BASS_STEPS.forEach((step, idx) => {
+      const note = idx % 2 === 0 ? 'C3' : 'G3';
+      pluck(ctx, NOTE_FREQ[note], startTime + step * STEP_DUR, STEP_DUR * 3.6, 'sawtooth', 0.1);
+      kick(ctx, startTime + step * STEP_DUR);
+      hat(ctx, noiseBuffer, startTime + (step + 2) * STEP_DUR);
+    });
+  }
+
+  function startJam() {
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    noiseBuffer = noiseBuffer || createNoiseBuffer(audioCtx);
+    jamPlaying = true;
+    let nextBarTime = audioCtx.currentTime + 0.05;
+    (function queueBar() {
+      scheduleBar(audioCtx, nextBarTime);
+      nextBarTime += BAR_DUR;
+      jamTimer = setTimeout(queueBar, BAR_DUR * 1000);
+    })();
+  }
+
+  function stopJam() {
+    jamPlaying = false;
+    clearTimeout(jamTimer);
+  }
+
+  jamBtn.addEventListener('click', () => {
+    if (jamPlaying) {
+      stopJam();
+      jamBtn.textContent = '🎵 Play a jam';
+      jamBtn.classList.remove('active');
+    } else {
+      startJam();
+      jamBtn.textContent = '⏹ Stop the jam';
+      jamBtn.classList.add('active');
+    }
+  });
 </script>
