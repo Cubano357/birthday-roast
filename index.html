@@ -403,7 +403,74 @@
     .card-stage { padding: 26px 20px 22px; }
     form { padding: 20px; }
   }
+
+  .balloons {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .balloon {
+    position: absolute;
+    bottom: -160px;
+    width: 42px;
+    height: 54px;
+    background: currentColor;
+    border-radius: 50% 50% 48% 48% / 58% 58% 42% 42%;
+    opacity: 0.5;
+    animation: float-up linear infinite;
+  }
+
+  .balloon::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -7px;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 7px solid currentColor;
+  }
+
+  .balloon::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    width: 1px;
+    height: 60px;
+    background: var(--ink-soft);
+    opacity: 0.4;
+  }
+
+  .balloon:nth-child(1) { left: 4%;  color: var(--coral);         width: 38px; height: 48px; --sway: 26px;  animation-duration: 16s; animation-delay: -2s; }
+  .balloon:nth-child(2) { left: 16%; color: var(--teal);          width: 46px; height: 58px; --sway: -34px; animation-duration: 21s; animation-delay: -14s; }
+  .balloon:nth-child(3) { left: 29%; color: var(--marigold);      width: 40px; height: 52px; --sway: 20px;  animation-duration: 18s; animation-delay: -7s; }
+  .balloon:nth-child(4) { left: 42%; color: var(--pink);          width: 44px; height: 56px; --sway: -22px; animation-duration: 23s; animation-delay: -19s; }
+  .balloon:nth-child(5) { left: 57%; color: var(--coral-strong);  width: 36px; height: 46px; --sway: 30px;  animation-duration: 17s; animation-delay: -9s; }
+  .balloon:nth-child(6) { left: 70%; color: var(--teal);          width: 48px; height: 60px; --sway: -18px; animation-duration: 24s; animation-delay: -4s; }
+  .balloon:nth-child(7) { left: 83%; color: var(--marigold-soft); width: 40px; height: 52px; --sway: 24px;  animation-duration: 19s; animation-delay: -16s; }
+  .balloon:nth-child(8) { left: 93%; color: var(--pink);          width: 34px; height: 44px; --sway: -28px; animation-duration: 22s; animation-delay: -11s; }
+
+  @keyframes float-up {
+    0%   { transform: translate(0, 0) rotate(0deg); }
+    50%  { transform: translate(var(--sway, 24px), -60vh) rotate(6deg); }
+    100% { transform: translate(0, -130vh) rotate(-6deg); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .balloons { display: none; }
+  }
 </style>
+
+<div class="balloons" aria-hidden="true">
+  <i class="balloon"></i><i class="balloon"></i><i class="balloon"></i><i class="balloon"></i>
+  <i class="balloon"></i><i class="balloon"></i><i class="balloon"></i><i class="balloon"></i>
+</div>
 
 <main>
   <header>
