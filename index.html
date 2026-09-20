@@ -1,0 +1,570 @@
+<title>Birthday Roast</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Caveat:wght@600;700&family=Archivo:wght@400;500;600;700&display=swap">
+<style>
+  :root {
+    --bg: #FFF7EA;
+    --surface: #FFFDF9;
+    --surface-2: #FFF1DA;
+    --ink: #2C1B2E;
+    --ink-soft: #7A647C;
+    --coral: #FF5D5D;
+    --coral-strong: #E23F4E;
+    --marigold: #E8951F;
+    --marigold-soft: #F6C976;
+    --teal: #1FA898;
+    --pink: #E84393;
+    --border: #EEDCB8;
+    --shadow: rgba(44, 27, 46, 0.16);
+    color-scheme: light;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1E0F23;
+      --surface: #2A1731;
+      --surface-2: #35203C;
+      --ink: #F6ECE4;
+      --ink-soft: #C4AEC7;
+      --coral: #FF7A6E;
+      --coral-strong: #FF9186;
+      --marigold: #FFC35E;
+      --marigold-soft: #7A5A22;
+      --teal: #4FD9C4;
+      --pink: #FF7AB6;
+      --border: #4A2C53;
+      --shadow: rgba(0, 0, 0, 0.55);
+      color-scheme: dark;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #1E0F23;
+    --surface: #2A1731;
+    --surface-2: #35203C;
+    --ink: #F6ECE4;
+    --ink-soft: #C4AEC7;
+    --coral: #FF7A6E;
+    --coral-strong: #FF9186;
+    --marigold: #FFC35E;
+    --marigold-soft: #7A5A22;
+    --teal: #4FD9C4;
+    --pink: #FF7AB6;
+    --border: #4A2C53;
+    --shadow: rgba(0, 0, 0, 0.55);
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Archivo', system-ui, sans-serif;
+    padding: 48px 20px 64px;
+    display: flex;
+    justify-content: center;
+  }
+
+  main {
+    width: 100%;
+    max-width: 980px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 36px;
+    align-items: start;
+  }
+
+  @media (max-width: 760px) {
+    .layout {
+      grid-template-columns: 1fr;
+    }
+    main { max-width: 560px; }
+  }
+
+  header {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+    padding-top: 6px;
+  }
+
+  .confetti {
+    position: absolute;
+    top: -2px;
+    left: 0;
+    right: 0;
+    height: 40px;
+    pointer-events: none;
+    overflow: visible;
+  }
+
+  .confetti i {
+    position: absolute;
+    display: block;
+    border-radius: 2px;
+  }
+
+  .confetti i:nth-child(1) { left: 2%;  top: 4px;  width: 8px;  height: 8px; background: var(--marigold); transform: rotate(18deg); border-radius: 50%; }
+  .confetti i:nth-child(2) { left: 16%; top: 22px; width: 7px;  height: 12px; background: var(--pink); transform: rotate(-16deg); }
+  .confetti i:nth-child(3) { left: 30%; top: 0;    width: 9px;  height: 9px; background: var(--teal); transform: rotate(8deg); border-radius: 50%; }
+  .confetti i:nth-child(4) { left: 47%; top: 18px; width: 6px;  height: 10px; background: var(--coral); transform: rotate(24deg); }
+  .confetti i:nth-child(5) { left: 63%; top: 2px;  width: 8px;  height: 8px; background: var(--teal); transform: rotate(-10deg); border-radius: 50%; }
+  .confetti i:nth-child(6) { left: 79%; top: 20px; width: 7px;  height: 11px; background: var(--marigold); transform: rotate(-22deg); }
+  .confetti i:nth-child(7) { left: 93%; top: 3px;  width: 7px;  height: 7px; background: var(--pink); transform: rotate(14deg); border-radius: 50%; }
+
+  h1 {
+    font-family: 'Bricolage Grotesque', 'Archivo', sans-serif;
+    font-weight: 800;
+    font-size: clamp(2.1rem, 6vw, 2.75rem);
+    line-height: 1.05;
+    margin: 0;
+    text-wrap: balance;
+    color: var(--ink);
+    position: relative;
+  }
+
+  h1 .word-birthday { color: var(--teal); }
+  h1 .word-roast { color: var(--coral-strong); }
+  h1 .bang { color: var(--marigold); }
+
+  .eyebrow {
+    align-self: flex-start;
+    font-family: 'Archivo', sans-serif;
+    font-weight: 700;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #2C1010;
+    background: var(--marigold);
+    padding: 7px 16px;
+    border-radius: 999px;
+    transform: rotate(-2deg);
+    box-shadow: 0 8px 16px -10px var(--shadow);
+  }
+
+  .subtitle {
+    color: var(--ink-soft);
+    font-size: 1rem;
+    line-height: 1.5;
+    max-width: 46ch;
+    margin: 0;
+  }
+
+  form {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    box-shadow: 0 12px 28px -18px var(--shadow);
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .field-row {
+    display: flex;
+    gap: 16px;
+  }
+
+  .field-row .field {
+    flex: 1;
+    min-width: 0;
+  }
+
+  label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  input {
+    font-family: 'Archivo', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: var(--ink);
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid var(--border);
+    padding: 6px 2px 8px;
+    outline: none;
+    transition: border-color 0.15s ease;
+    min-width: 0;
+    width: 100%;
+  }
+
+  input::placeholder {
+    color: var(--ink-soft);
+    opacity: 0.55;
+  }
+
+  input:focus {
+    border-bottom-color: var(--marigold);
+  }
+
+  button {
+    font-family: 'Archivo', sans-serif;
+    cursor: pointer;
+    border: none;
+  }
+
+  .btn-primary {
+    background: var(--coral);
+    color: #2C1010;
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 13px 20px;
+    border-radius: 999px;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+    box-shadow: 0 10px 20px -10px var(--shadow);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-1px);
+  }
+
+  .btn-primary:active {
+    transform: translateY(0);
+  }
+
+  .card-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+  }
+
+  .card-stage {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px 18px 18px 6px;
+    padding: 34px 30px 28px 52px;
+    position: relative;
+    box-shadow: 0 26px 44px -22px var(--shadow), 0 2px 0 var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transform: rotate(var(--rotate, 0.6deg)) scale(var(--scale, 1));
+    transition: opacity 0.2s ease;
+  }
+
+  .card-stage.is-older {
+    --scale: 0.97;
+    opacity: 0.8;
+    filter: saturate(0.88);
+    box-shadow: 0 14px 26px -20px var(--shadow), 0 2px 0 var(--border);
+  }
+
+  .card-stage::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 26px;
+    border-radius: 6px 0 0 6px;
+    background: linear-gradient(to right, var(--shadow), transparent);
+    opacity: 0.55;
+  }
+
+  .card-stage::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 26px;
+    bottom: 0;
+    width: 1px;
+    background: var(--border);
+  }
+
+  .greeting {
+    font-family: 'Bricolage Grotesque', 'Archivo', sans-serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--coral-strong);
+    margin: 0;
+  }
+
+  .candles {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+    height: 34px;
+  }
+
+  .candle {
+    width: 5px;
+    height: 22px;
+    border-radius: 2px;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .candle:nth-child(1) { background: var(--coral); height: 18px; }
+  .candle:nth-child(2) { background: var(--teal); height: 26px; }
+  .candle:nth-child(3) { background: var(--pink); height: 16px; }
+  .candle:nth-child(4) { background: var(--marigold); height: 22px; }
+
+  .candle::before {
+    content: "";
+    position: absolute;
+    top: -11px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 8px;
+    height: 11px;
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    background: radial-gradient(circle at 50% 30%, #FFE9A8, var(--marigold) 70%);
+    animation: flicker 1.8s ease-in-out infinite;
+  }
+
+  .candle:nth-child(2)::before { animation-delay: 0.3s; }
+  .candle:nth-child(3)::before { animation-delay: 0.6s; }
+  .candle:nth-child(4)::before { animation-delay: 0.9s; }
+
+  @keyframes flicker {
+    0%, 100% { transform: translateX(-50%) scale(1); opacity: 1; }
+    50% { transform: translateX(-50%) scale(0.88, 1.05); opacity: 0.85; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .candle::before { animation: none; }
+  }
+
+  .message-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .message {
+    font-family: 'Caveat', cursive;
+    font-weight: 600;
+    font-size: clamp(1.5rem, 4.6vw, 1.85rem);
+    line-height: 1.35;
+    color: var(--ink);
+    margin: 0;
+    text-wrap: balance;
+    min-height: 3.6em;
+  }
+
+  .card-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .btn-ghost {
+    background: var(--surface-2);
+    color: var(--ink);
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 10px 18px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    transition: border-color 0.15s ease;
+  }
+
+  .btn-ghost:hover {
+    border-color: var(--marigold);
+  }
+
+  .btn-ghost.copied {
+    color: var(--coral-strong);
+    border-color: var(--coral-strong);
+  }
+
+  footer {
+    text-align: center;
+    color: var(--ink-soft);
+    font-size: 0.82rem;
+  }
+
+  @media (max-width: 420px) {
+    .field-row { flex-direction: column; gap: 18px; }
+    .card-stage { padding: 26px 20px 22px; }
+    form { padding: 20px; }
+  }
+</style>
+
+<main>
+  <header>
+    <div class="confetti" aria-hidden="true">
+      <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+    </div>
+    <span class="eyebrow">Handle with sarcasm</span>
+    <h1><span class="word-birthday">Birthday</span> <span class="word-roast">Roast</span><span class="bang">!</span></h1>
+    <p class="subtitle">Give us the who, the how-old, and the hobby. We'll write the line you read out loud at the table.</p>
+  </header>
+
+  <div class="layout">
+    <div class="panel-form">
+      <form id="roast-form">
+        <div class="field">
+          <label for="name">Their name</label>
+          <input id="name" name="name" type="text" placeholder="Maya" value="Maya" autocomplete="off">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="age">Turning</label>
+            <input id="age" name="age" type="number" min="1" max="130" placeholder="32" value="32">
+          </div>
+          <div class="field">
+            <label for="hobby">Known for</label>
+            <input id="hobby" name="hobby" type="text" placeholder="competitive birdwatching" value="competitive birdwatching" autocomplete="off">
+          </div>
+        </div>
+        <button type="submit" class="btn-primary">Generate the roast</button>
+      </form>
+    </div>
+
+    <div class="panel-card">
+      <div class="card-stack" id="card-stack"></div>
+    </div>
+  </div>
+
+  <footer>No data saved anywhere — everything happens right here in your browser.</footer>
+</main>
+
+<script>
+  const templates = [
+    (n, a, h) => `Happy ${a}th, ${n}! At this rate your ${h} skills peaked years ago — but hey, at least you peaked at something.`,
+    (n, a, h) => `${n}, ${a} years old and still telling people ${h} is "a whole personality." We love that for you. Truly. Sort of.`,
+    (n, a, h) => `They say age is just a number, ${n}. ${a} is a pretty big number though. Almost as big as your ${h} collection.`,
+    (n, a, h) => `Happy birthday ${n}! ${a} looks great on you — like a fine wine, or your ${h} gear, aged and slightly concerning.`,
+    (n, a, h) => `Another year older, ${n}, and somehow still not better at ${h}. Impressive consistency.`,
+    (n, a, h) => `${a}?! ${n}, I've seen milk cartons with a longer shelf life than your attention span for ${h}.`,
+    (n, a, h) => `Happy ${a}th birthday to ${n} — the only person I know who can turn ${h} into a full-blown personality crisis.`,
+    (n, a, h) => `${n}, at ${a} you've officially been doing ${h} long enough to call it "a journey." We're all very proud. And a little concerned.`,
+    (n, a, h) => `Congrats on ${a} years, ${n}. Somewhere out there, your ${h} instructor is quietly updating their resume.`,
+    (n, a, h) => `Here's to ${n}: ${a} years young, and still convinced ${h} is going to make them famous. Never stop dreaming.`,
+    (n, a, h) => `Happy birthday, ${n}! ${a} candles on the cake — almost as many as the hours you've spent explaining ${h} to people who didn't ask.`,
+    (n, a, h) => `${n} just turned ${a}, which in ${h} years is basically ancient. Respect your elders.`,
+    (n, a, h) => `You're ${a} now, ${n}. Old enough to know better, young enough to still blame ${h} for everything.`,
+    (n, a, h) => `Happy birthday ${n}! May your ${a}th year bring you everything you want — except maybe more time for ${h}. You've had enough.`,
+    (n, a, h) => `${n}: ${a} trips around the sun, and yet somehow zero improvement in ${h}. That's dedication.`,
+    (n, a, h) => `Legal notice: ${n} is now ${a}, which means ${h} is officially a midlife thing now, not a phase.`,
+    (n, a, h) => `Happy ${a}th, ${n}. You don't look a day over the last time you brought up ${h}, which was five minutes ago.`,
+    (n, a, h) => `${a} years old and ${n} still lights up talking about ${h}. Honestly kind of beautiful. Mostly just a lot.`,
+    (n, a, h) => `To ${n} on your ${a}th: may your cake be sweet and your ${h} skills finally, finally improve. Miracles happen.`,
+    (n, a, h) => `Happy birthday ${n}! ${a} is the age you're legally required to admit ${h} isn't "just a phase" anymore.`
+  ];
+
+  const form = document.getElementById('roast-form');
+  const nameInput = document.getElementById('name');
+  const ageInput = document.getElementById('age');
+  const hobbyInput = document.getElementById('hobby');
+  const stackEl = document.getElementById('card-stack');
+
+  let bag = [];
+
+  function refillBag() {
+    bag = templates.map((_, i) => i);
+    for (let i = bag.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [bag[i], bag[j]] = [bag[j], bag[i]];
+    }
+  }
+
+  function pickMessage() {
+    const name = nameInput.value.trim() || 'you';
+    const age = ageInput.value.trim() || '??';
+    const hobby = hobbyInput.value.trim().toLowerCase() || 'whatever that thing is you do';
+
+    if (bag.length === 0) refillBag();
+    const idx = bag.pop();
+    return templates[idx](name, age, hobby);
+  }
+
+  async function copyCardMessage(card, btn) {
+    const text = card.querySelector('.message').textContent;
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch (err) {
+      const messageEl = card.querySelector('.message');
+      const range = document.createRange();
+      range.selectNode(messageEl);
+      window.getSelection().removeAllRanges();
+      window.getSelection().addRange(range);
+      document.execCommand('copy');
+      window.getSelection().removeAllRanges();
+    }
+    const original = btn.textContent;
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = original;
+      btn.classList.remove('copied');
+    }, 1500);
+  }
+
+  function demoteTopCard() {
+    const top = stackEl.firstElementChild;
+    if (!top) return;
+    top.classList.remove('is-newest');
+    top.classList.add('is-older');
+    const candles = top.querySelector('.candles');
+    if (candles) candles.remove();
+    const tryBtn = top.querySelector('.try-again-btn');
+    if (tryBtn) tryBtn.remove();
+  }
+
+  function addCard(message) {
+    demoteTopCard();
+
+    const rotate = (Math.random() * 2.4 - 1.2).toFixed(2) + 'deg';
+    const card = document.createElement('section');
+    card.className = 'card-stage is-newest';
+    card.style.setProperty('--rotate', rotate);
+    card.innerHTML = `
+      <div class="candles" aria-hidden="true">
+        <div class="candle"></div>
+        <div class="candle"></div>
+        <div class="candle"></div>
+        <div class="candle"></div>
+      </div>
+      <p class="greeting">Happy Birthday!</p>
+      <div>
+        <div class="message-label">Ready to copy into the card</div>
+        <p class="message"></p>
+      </div>
+      <div class="card-actions">
+        <button type="button" class="btn-ghost try-again-btn">Try another</button>
+        <button type="button" class="btn-ghost copy-btn">Copy message</button>
+      </div>
+    `;
+    card.querySelector('.message').textContent = message;
+    card.querySelector('.try-again-btn').addEventListener('click', () => addCard(pickMessage()));
+    const copyBtn = card.querySelector('.copy-btn');
+    copyBtn.addEventListener('click', () => copyCardMessage(card, copyBtn));
+
+    stackEl.prepend(card);
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    refillBag();
+    addCard(pickMessage());
+  });
+
+  refillBag();
+  addCard(pickMessage());
+</script>
