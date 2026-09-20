@@ -245,6 +245,13 @@
     transform: translateY(0);
   }
 
+  .form-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
   .card-stack {
     display: flex;
     flex-direction: column;
@@ -507,7 +514,10 @@
             <input id="hobby" name="hobby" type="text" placeholder="competitive birdwatching" value="competitive birdwatching" autocomplete="off">
           </div>
         </div>
-        <button type="submit" class="btn-primary">Generate the roast</button>
+        <div class="form-actions">
+          <button type="submit" class="btn-primary">Generate the roast</button>
+          <button type="button" id="lucky-btn" class="btn-ghost">🍀 I'm Feeling Lucky</button>
+        </div>
       </form>
     </div>
 
@@ -638,6 +648,33 @@
     e.preventDefault();
     refillBag();
     addCard(pickMessage());
+  });
+
+  const LUCKY_NAMES = [
+    'Gary', 'Karen', 'Chad', 'Brenda-Jean', 'Kevin III', 'Nigel',
+    'Doris', 'Big Steve', 'Tammy', 'Reginald', 'Cheryl', 'Dwight',
+    'Sunny', 'Bartholomew', 'Peaches'
+  ];
+  const LUCKY_HOBBIES = [
+    'competitive napping', 'extreme couponing', 'yelling at clouds',
+    'arguing with GPS', 'interpretive mime', 'collecting rubber ducks',
+    'competitive birdwatching', 'narrating their own life in third person',
+    'alphabetizing the spice rack', 'winning at Wordle and telling everyone',
+    'ghost hunting in the garage', 'texting in all caps', 'lawn ornament curation',
+    'unsolicited karaoke', 'befriending raccoons'
+  ];
+  const LUCKY_AGES = [1, 5, 8, 13, 16, 18, 21, 25, 30, 35, 40, 50, 65, 80, 99, 130];
+
+  function pickRandom(list) {
+    return list[Math.floor(Math.random() * list.length)];
+  }
+
+  const luckyBtn = document.getElementById('lucky-btn');
+  luckyBtn.addEventListener('click', () => {
+    nameInput.value = pickRandom(LUCKY_NAMES);
+    ageInput.value = pickRandom(LUCKY_AGES);
+    hobbyInput.value = pickRandom(LUCKY_HOBBIES);
+    form.requestSubmit();
   });
 
   refillBag();
